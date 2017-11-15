@@ -18,6 +18,8 @@ class App extends Component {
       hasTemp: false,
       temp: null,
       city: null,
+      state: null,
+      Country: null,
       hasCity: false,
       weather:''
     }
@@ -34,12 +36,8 @@ class App extends Component {
     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${city}`)
       .then(response => response.json())
       .then(data => {
-        // console.log(data);
-        // console.log(data.results[0].address_components[0].long_name);
-        // console.log(data.results[0].address_components[1].short_name);
-        // console.log(data.results[0].address_components[2].short_name);
       if(data.status !== `OK`) {
-
+        console.log(data);
         this.setState({
           loadingLatlng: false,
           hasLatlng: false,
@@ -51,9 +49,11 @@ class App extends Component {
         this.setState({
           loadingLatlng: false,
           hasLatlng: true,
-          latlng: data.results[0].geometry.location
+          latlng: data.results[0].geometry.location,
+          city: data.results[0].address_components[0].long_name,
+          state: data.results[0].address_components[1].short_name,
+          country:data.results[0].address_components[2].long_name
         })
-      console.log(this.state.latlng.lat, this.state.latlng.lng);
       this.getTemp(this.state.latlng.lat, this.state.latlng.lng)
       return data.results[0].geometry.location
       }
@@ -101,15 +101,14 @@ class App extends Component {
       )
     }if(!this.state.loadingLatlng && this.state.hasLatlng){
       return(
+
           <div>
-            <div> <h1> {this.state.weather} </h1> </div>
-            <div> The lattitude and longitude of {this.state.city} is</div>
-            <div> Lattitude: {this.state.latlng.lat} </div>
-            <div> Longitude: {this.state.latlng.lng} </div>
-            <div> The Temp of {this.state.city} is </div>
-            <div> Temp: {this.state.temp} Degrees Celcius  </div>
+            <div> The weather in {this.state.city}, {this.state.country} is</div>
+            <h1>{this.state.temp } &#8451;</h1>
+            <h3> {this.state.weather} </h3>
           </div>
       )
+
     }
   }
 
