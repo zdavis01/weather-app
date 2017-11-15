@@ -18,7 +18,8 @@ class App extends Component {
       hasTemp: false,
       temp: null,
       city: null,
-      hasCity: false
+      hasCity: false,
+      weather:''
     }
   }
 
@@ -33,11 +34,10 @@ class App extends Component {
     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${city}`)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        console.log(data.results[0].address_components[0].long_name);
-        console.log(data.results[0].address_components[1].short_name);
-        console.log(data.results[0].address_components[2].short_name);
-        
+        // console.log(data);
+        // console.log(data.results[0].address_components[0].long_name);
+        // console.log(data.results[0].address_components[1].short_name);
+        // console.log(data.results[0].address_components[2].short_name);
       if(data.status !== `OK`) {
 
         this.setState({
@@ -64,10 +64,13 @@ class App extends Component {
     return fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=72af66db614bf9fd03583352142dd7a7`)
       .then(response => response.json())
       .then(data => {
+        console.log(data)
+        console.log(data.weather[0].main);
 
         this.setState({
           hasTemp: true,
-          temp: parseInt(data.main.temp - 273.15)
+          temp: parseInt(data.main.temp - 273.15),
+          weather: data.weather[0].main
         })
       })
   }
@@ -99,6 +102,7 @@ class App extends Component {
     }if(!this.state.loadingLatlng && this.state.hasLatlng){
       return(
           <div>
+            <div> <h1> {this.state.weather} </h1> </div>
             <div> The lattitude and longitude of {this.state.city} is</div>
             <div> Lattitude: {this.state.latlng.lat} </div>
             <div> Longitude: {this.state.latlng.lng} </div>
